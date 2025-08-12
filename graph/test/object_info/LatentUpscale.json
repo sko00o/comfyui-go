@@ -1,0 +1,68 @@
+{
+    "LatentUpscale": {
+        "input": {
+            "required": {
+                "samples": [
+                    "LATENT"
+                ],
+                "upscale_method": [
+                    [
+                        "nearest-exact",
+                        "bilinear",
+                        "area",
+                        "bicubic",
+                        "bislerp"
+                    ]
+                ],
+                "width": [
+                    "INT",
+                    {
+                        "default": 512,
+                        "min": 0,
+                        "max": 16384,
+                        "step": 8
+                    }
+                ],
+                "height": [
+                    "INT",
+                    {
+                        "default": 512,
+                        "min": 0,
+                        "max": 16384,
+                        "step": 8
+                    }
+                ],
+                "crop": [
+                    [
+                        "disabled",
+                        "center"
+                    ]
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "samples",
+                "upscale_method",
+                "width",
+                "height",
+                "crop"
+            ]
+        },
+        "output": [
+            "LATENT"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "LATENT"
+        ],
+        "name": "LatentUpscale",
+        "display_name": "Upscale Latent",
+        "description": "",
+        "python_module": "nodes",
+        "category": "latent",
+        "output_node": false
+    }
+}

@@ -1,0 +1,44 @@
+{
+    "VAEDecode": {
+        "input": {
+            "required": {
+                "samples": [
+                    "LATENT",
+                    {
+                        "tooltip": "The latent to be decoded."
+                    }
+                ],
+                "vae": [
+                    "VAE",
+                    {
+                        "tooltip": "The VAE model used for decoding the latent."
+                    }
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "samples",
+                "vae"
+            ]
+        },
+        "output": [
+            "IMAGE"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "IMAGE"
+        ],
+        "name": "VAEDecode",
+        "display_name": "VAE Decode",
+        "description": "Decodes latent images back into pixel space images.",
+        "python_module": "nodes",
+        "category": "latent",
+        "output_node": false,
+        "output_tooltips": [
+            "The decoded image."
+        ]
+    }
+}

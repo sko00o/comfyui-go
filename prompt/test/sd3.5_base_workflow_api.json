@@ -1,0 +1,163 @@
+{
+  "107": {
+    "inputs": {
+      "ckpt_name": "sd3.5_large_turbo.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "102": {
+    "inputs": {
+      "text": "beautiful scenery nature glass bottle landscape, purple galaxy bottle,",
+      "clip": [
+        "55",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "105": {
+    "inputs": {
+      "samples": [
+        "101",
+        0
+      ],
+      "vae": [
+        "107",
+        2
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "18": {
+    "inputs": {
+      "clip_name1": "clip_g.safetensors",
+      "clip_name2": "clip_l.safetensors",
+      "clip_name3": "t5xxl_fp16.safetensors"
+    },
+    "class_type": "TripleCLIPLoader"
+  },
+  "19": {
+    "inputs": {
+      "shift": 3,
+      "model": [
+        "107",
+        0
+      ]
+    },
+    "class_type": "ModelSamplingSD3"
+  },
+  "104": {
+    "inputs": {
+      "images": [
+        "105",
+        0
+      ]
+    },
+    "class_type": "SaveImageWebsocket"
+  },
+  "20": {
+    "inputs": {
+      "conditioning": [
+        "103",
+        0
+      ]
+    },
+    "class_type": "ConditioningZeroOut"
+  },
+  "21": {
+    "inputs": {
+      "start": 0.1,
+      "end": 1,
+      "conditioning": [
+        "20",
+        0
+      ]
+    },
+    "class_type": "ConditioningSetTimestepRange"
+  },
+  "23": {
+    "inputs": {
+      "conditioning_1": [
+        "21",
+        0
+      ],
+      "conditioning_2": [
+        "22",
+        0
+      ]
+    },
+    "class_type": "ConditioningCombine"
+  },
+  "22": {
+    "inputs": {
+      "start": 0,
+      "end": 0.1,
+      "conditioning": [
+        "103",
+        0
+      ]
+    },
+    "class_type": "ConditioningSetTimestepRange"
+  },
+  "103": {
+    "inputs": {
+      "text": "",
+      "clip": [
+        "55",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "24": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "EmptySD3LatentImage"
+  },
+  "101": {
+    "inputs": {
+      "seed": 1042540244833452,
+      "steps": 4,
+      "cfg": 1,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "sgm_uniform",
+      "denoise": 1,
+      "model": [
+        "55",
+        0
+      ],
+      "positive": [
+        "102",
+        0
+      ],
+      "negative": [
+        "23",
+        0
+      ],
+      "latent_image": [
+        "24",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "55": {
+    "inputs": {
+      "lora_name": "SD35-lora-Futuristic-Bzonze-Colored.safetensors",
+      "strength_model": 1,
+      "strength_clip": 1,
+      "model": [
+        "19",
+        0
+      ],
+      "clip": [
+        "18",
+        0
+      ]
+    },
+    "class_type": "LoraLoader"
+  }
+}

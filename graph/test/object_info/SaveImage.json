@@ -1,0 +1,44 @@
+{
+    "SaveImage": {
+        "input": {
+            "required": {
+                "images": [
+                    "IMAGE",
+                    {
+                        "tooltip": "The images to save."
+                    }
+                ],
+                "filename_prefix": [
+                    "STRING",
+                    {
+                        "default": "ComfyUI",
+                        "tooltip": "The prefix for the file to save. This may include formatting information such as %date:yyyy-MM-dd% or %Empty Latent Image.width% to include values from nodes."
+                    }
+                ]
+            },
+            "hidden": {
+                "prompt": "PROMPT",
+                "extra_pnginfo": "EXTRA_PNGINFO"
+            }
+        },
+        "input_order": {
+            "required": [
+                "images",
+                "filename_prefix"
+            ],
+            "hidden": [
+                "prompt",
+                "extra_pnginfo"
+            ]
+        },
+        "output": [],
+        "output_is_list": [],
+        "output_name": [],
+        "name": "SaveImage",
+        "display_name": "Save Image",
+        "description": "Saves the input images to your ComfyUI output directory.",
+        "python_module": "nodes",
+        "category": "image",
+        "output_node": true
+    }
+}

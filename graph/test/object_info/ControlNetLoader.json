@@ -1,0 +1,36 @@
+{
+    "ControlNetLoader": {
+        "input": {
+            "required": {
+                "control_net_name": [
+                    [
+                        "control_v11e_sd15_ip2p.pth",
+                        "control_v11f1e_sd15_tile.pth",
+                        "control_v11p_sd15_canny.pth",
+                        "control_v11p_sd15_openpose.pth"
+                    ]
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "control_net_name"
+            ]
+        },
+        "output": [
+            "CONTROL_NET"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "CONTROL_NET"
+        ],
+        "name": "ControlNetLoader",
+        "display_name": "Load ControlNet Model",
+        "description": "",
+        "python_module": "nodes",
+        "category": "loaders",
+        "output_node": false
+    }
+}

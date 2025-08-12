@@ -1,0 +1,101 @@
+{
+    "CLIPTextEncodeSDXL": {
+        "input": {
+            "required": {
+                "width": [
+                    "INT",
+                    {
+                        "default": 1024.0,
+                        "min": 0,
+                        "max": 16384
+                    }
+                ],
+                "height": [
+                    "INT",
+                    {
+                        "default": 1024.0,
+                        "min": 0,
+                        "max": 16384
+                    }
+                ],
+                "crop_w": [
+                    "INT",
+                    {
+                        "default": 0,
+                        "min": 0,
+                        "max": 16384
+                    }
+                ],
+                "crop_h": [
+                    "INT",
+                    {
+                        "default": 0,
+                        "min": 0,
+                        "max": 16384
+                    }
+                ],
+                "target_width": [
+                    "INT",
+                    {
+                        "default": 1024.0,
+                        "min": 0,
+                        "max": 16384
+                    }
+                ],
+                "target_height": [
+                    "INT",
+                    {
+                        "default": 1024.0,
+                        "min": 0,
+                        "max": 16384
+                    }
+                ],
+                "text_g": [
+                    "STRING",
+                    {
+                        "multiline": true,
+                        "dynamicPrompts": true
+                    }
+                ],
+                "clip": [
+                    "CLIP"
+                ],
+                "text_l": [
+                    "STRING",
+                    {
+                        "multiline": true,
+                        "dynamicPrompts": true
+                    }
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "width",
+                "height",
+                "crop_w",
+                "crop_h",
+                "target_width",
+                "target_height",
+                "text_g",
+                "clip",
+                "text_l"
+            ]
+        },
+        "output": [
+            "CONDITIONING"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "CONDITIONING"
+        ],
+        "name": "CLIPTextEncodeSDXL",
+        "display_name": "CLIPTextEncodeSDXL",
+        "description": "",
+        "python_module": "comfy_extras.nodes_clip_sdxl",
+        "category": "advanced/conditioning",
+        "output_node": false
+    }
+}

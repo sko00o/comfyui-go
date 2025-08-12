@@ -1,0 +1,63 @@
+{
+    "BasicScheduler": {
+        "input": {
+            "required": {
+                "model": [
+                    "MODEL"
+                ],
+                "scheduler": [
+                    [
+                        "normal",
+                        "karras",
+                        "exponential",
+                        "sgm_uniform",
+                        "simple",
+                        "ddim_uniform",
+                        "beta",
+                        "linear_quadratic"
+                    ]
+                ],
+                "steps": [
+                    "INT",
+                    {
+                        "default": 20,
+                        "min": 1,
+                        "max": 10000
+                    }
+                ],
+                "denoise": [
+                    "FLOAT",
+                    {
+                        "default": 1.0,
+                        "min": 0.0,
+                        "max": 1.0,
+                        "step": 0.01
+                    }
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "model",
+                "scheduler",
+                "steps",
+                "denoise"
+            ]
+        },
+        "output": [
+            "SIGMAS"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "SIGMAS"
+        ],
+        "name": "BasicScheduler",
+        "display_name": "BasicScheduler",
+        "description": "",
+        "python_module": "comfy_extras.nodes_custom_sampler",
+        "category": "sampling/custom_sampling/schedulers",
+        "output_node": false
+    }
+}

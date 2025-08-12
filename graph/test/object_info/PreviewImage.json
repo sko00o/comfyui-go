@@ -1,0 +1,33 @@
+{
+    "PreviewImage": {
+        "input": {
+            "required": {
+                "images": [
+                    "IMAGE"
+                ]
+            },
+            "hidden": {
+                "prompt": "PROMPT",
+                "extra_pnginfo": "EXTRA_PNGINFO"
+            }
+        },
+        "input_order": {
+            "required": [
+                "images"
+            ],
+            "hidden": [
+                "prompt",
+                "extra_pnginfo"
+            ]
+        },
+        "output": [],
+        "output_is_list": [],
+        "output_name": [],
+        "name": "PreviewImage",
+        "display_name": "Preview Image",
+        "description": "Saves the input images to your ComfyUI output directory.",
+        "python_module": "nodes",
+        "category": "image",
+        "output_node": true
+    }
+}

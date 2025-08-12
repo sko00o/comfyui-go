@@ -1,0 +1,36 @@
+{
+    "VAELoader": {
+        "input": {
+            "required": {
+                "vae_name": [
+                    [
+                        "ae.safetensors",
+                        "sdxl_vae.safetensors",
+                        "vae-ft-ema-560000-ema-pruned.safetensors",
+                        "vae-ft-mse-840000-ema-pruned.safetensors"
+                    ]
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "vae_name"
+            ]
+        },
+        "output": [
+            "VAE"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "VAE"
+        ],
+        "name": "VAELoader",
+        "display_name": "Load VAE",
+        "description": "",
+        "python_module": "nodes",
+        "category": "loaders",
+        "output_node": false
+    }
+}

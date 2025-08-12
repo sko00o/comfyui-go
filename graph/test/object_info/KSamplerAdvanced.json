@@ -1,0 +1,152 @@
+{
+    "KSamplerAdvanced": {
+        "input": {
+            "required": {
+                "model": [
+                    "MODEL"
+                ],
+                "add_noise": [
+                    [
+                        "enable",
+                        "disable"
+                    ]
+                ],
+                "noise_seed": [
+                    "INT",
+                    {
+                        "default": 0,
+                        "min": 0,
+                        "max": 18446744073709551615
+                    }
+                ],
+                "steps": [
+                    "INT",
+                    {
+                        "default": 20,
+                        "min": 1,
+                        "max": 10000
+                    }
+                ],
+                "cfg": [
+                    "FLOAT",
+                    {
+                        "default": 8.0,
+                        "min": 0.0,
+                        "max": 100.0,
+                        "step": 0.1,
+                        "round": 0.01
+                    }
+                ],
+                "sampler_name": [
+                    [
+                        "euler",
+                        "euler_cfg_pp",
+                        "euler_ancestral",
+                        "euler_ancestral_cfg_pp",
+                        "heun",
+                        "heunpp2",
+                        "dpm_2",
+                        "dpm_2_ancestral",
+                        "lms",
+                        "dpm_fast",
+                        "dpm_adaptive",
+                        "dpmpp_2s_ancestral",
+                        "dpmpp_2s_ancestral_cfg_pp",
+                        "dpmpp_sde",
+                        "dpmpp_sde_gpu",
+                        "dpmpp_2m",
+                        "dpmpp_2m_alt",
+                        "dpmpp_2m_cfg_pp",
+                        "dpmpp_2m_sde",
+                        "dpmpp_2m_sde_gpu",
+                        "dpmpp_3m_sde",
+                        "dpmpp_3m_sde_gpu",
+                        "ddpm",
+                        "lcm",
+                        "ipndm",
+                        "ipndm_v",
+                        "deis",
+                        "ddim",
+                        "uni_pc",
+                        "uni_pc_bh2"
+                    ]
+                ],
+                "scheduler": [
+                    [
+                        "normal",
+                        "karras",
+                        "exponential",
+                        "sgm_uniform",
+                        "simple",
+                        "ddim_uniform",
+                        "beta",
+                        "linear_quadratic"
+                    ]
+                ],
+                "positive": [
+                    "CONDITIONING"
+                ],
+                "negative": [
+                    "CONDITIONING"
+                ],
+                "latent_image": [
+                    "LATENT"
+                ],
+                "start_at_step": [
+                    "INT",
+                    {
+                        "default": 0,
+                        "min": 0,
+                        "max": 10000
+                    }
+                ],
+                "end_at_step": [
+                    "INT",
+                    {
+                        "default": 10000,
+                        "min": 0,
+                        "max": 10000
+                    }
+                ],
+                "return_with_leftover_noise": [
+                    [
+                        "disable",
+                        "enable"
+                    ]
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "model",
+                "add_noise",
+                "noise_seed",
+                "steps",
+                "cfg",
+                "sampler_name",
+                "scheduler",
+                "positive",
+                "negative",
+                "latent_image",
+                "start_at_step",
+                "end_at_step",
+                "return_with_leftover_noise"
+            ]
+        },
+        "output": [
+            "LATENT"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "LATENT"
+        ],
+        "name": "KSamplerAdvanced",
+        "display_name": "KSampler (Advanced)",
+        "description": "",
+        "python_module": "nodes",
+        "category": "sampling",
+        "output_node": false
+    }
+}

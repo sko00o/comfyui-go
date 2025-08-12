@@ -1,0 +1,31 @@
+{
+    "MaskToImage": {
+        "input": {
+            "required": {
+                "mask": [
+                    "MASK"
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "mask"
+            ]
+        },
+        "output": [
+            "IMAGE"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "IMAGE"
+        ],
+        "name": "MaskToImage",
+        "display_name": "Convert Mask to Image",
+        "description": "",
+        "python_module": "comfy_extras.nodes_mask",
+        "category": "mask",
+        "output_node": false
+    }
+}

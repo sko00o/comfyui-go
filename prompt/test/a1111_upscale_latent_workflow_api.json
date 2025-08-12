@@ -1,0 +1,199 @@
+{
+  "107": {
+    "inputs": {
+      "ckpt_name": "toonyou_beta3.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "108": {
+    "inputs": {
+      "stop_at_clip_layer": -2,
+      "clip": [
+        "107",
+        1
+      ]
+    },
+    "class_type": "CLIPSetLastLayer"
+  },
+  "102": {
+    "inputs": {
+      "text": "(masterpiece:1.4),(best qualit:1.4),(high resolution:1.4),alice liddell,blue dress,white apron,black hairband,smile,looking at viewer",
+      "parser": "A1111",
+      "mean_normalization": true,
+      "multi_conditioning": false,
+      "use_old_emphasis_implementation": false,
+      "with_SDXL": false,
+      "ascore": 6,
+      "width": 1024,
+      "height": 1024,
+      "crop_w": 0,
+      "crop_h": 0,
+      "target_width": 1024,
+      "target_height": 1024,
+      "text_g": "",
+      "text_l": "",
+      "smZ_steps": 1,
+      "clip": [
+        "55",
+        1
+      ]
+    },
+    "class_type": "smZ CLIPTextEncode"
+  },
+  "103": {
+    "inputs": {
+      "text": "nsfw, (bad anatomy, worst quality, low quality:1.4), watermark, signature, username, patreon, monochrome, zombie, squinting, badhandv4, easynegative",
+      "parser": "A1111",
+      "mean_normalization": true,
+      "multi_conditioning": false,
+      "use_old_emphasis_implementation": false,
+      "with_SDXL": false,
+      "ascore": 6,
+      "width": 1024,
+      "height": 1024,
+      "crop_w": 0,
+      "crop_h": 0,
+      "target_width": 1024,
+      "target_height": 1024,
+      "text_g": "",
+      "text_l": "",
+      "smZ_steps": 1,
+      "clip": [
+        "55",
+        1
+      ]
+    },
+    "class_type": "smZ CLIPTextEncode"
+  },
+  "109": {
+    "inputs": {
+      "width": 512,
+      "height": 768,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage"
+  },
+  "101": {
+    "inputs": {
+      "seed": 1099633726,
+      "steps": 20,
+      "cfg": 8,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1,
+      "noise_mode": "GPU(=A1111)",
+      "batch_seed_mode": "incremental",
+      "variation_seed": 0,
+      "variation_strength": 0,
+      "variation_method": "linear",
+      "model": [
+        "55",
+        0
+      ],
+      "positive": [
+        "102",
+        0
+      ],
+      "negative": [
+        "103",
+        0
+      ],
+      "latent_image": [
+        "109",
+        0
+      ]
+    },
+    "class_type": "KSampler //Inspire"
+  },
+  "105": {
+    "inputs": {
+      "samples": [
+        "101",
+        0
+      ],
+      "vae": [
+        "107",
+        2
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "104": {
+    "inputs": {
+      "images": [
+        "216",
+        0
+      ]
+    },
+    "class_type": "SaveImageWebsocket"
+  },
+  "55": {
+    "inputs": {
+      "lora_name": "alice_liddell_v2.safetensors",
+      "strength_model": 1,
+      "strength_clip": 1,
+      "model": [
+        "107",
+        0
+      ],
+      "clip": [
+        "108",
+        0
+      ]
+    },
+    "class_type": "LoraLoader"
+  },
+  "215": {
+    "inputs": {
+      "seed": 1099633726,
+      "steps": 20,
+      "cfg": 8,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 0.5,
+      "model": [
+        "55",
+        0
+      ],
+      "positive": [
+        "102",
+        0
+      ],
+      "negative": [
+        "103",
+        0
+      ],
+      "latent_image": [
+        "217",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "216": {
+    "inputs": {
+      "samples": [
+        "215",
+        0
+      ],
+      "vae": [
+        "107",
+        2
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "217": {
+    "inputs": {
+      "upscale_method": "nearest-exact",
+      "width": 1024,
+      "height": 1536,
+      "crop": "disabled",
+      "samples": [
+        "101",
+        0
+      ]
+    },
+    "class_type": "LatentUpscale"
+  }
+}

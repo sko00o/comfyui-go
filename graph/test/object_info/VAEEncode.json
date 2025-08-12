@@ -1,0 +1,35 @@
+{
+    "VAEEncode": {
+        "input": {
+            "required": {
+                "pixels": [
+                    "IMAGE"
+                ],
+                "vae": [
+                    "VAE"
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "pixels",
+                "vae"
+            ]
+        },
+        "output": [
+            "LATENT"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "LATENT"
+        ],
+        "name": "VAEEncode",
+        "display_name": "VAE Encode",
+        "description": "",
+        "python_module": "nodes",
+        "category": "latent",
+        "output_node": false
+    }
+}

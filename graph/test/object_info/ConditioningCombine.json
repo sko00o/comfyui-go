@@ -1,0 +1,35 @@
+{
+    "ConditioningCombine": {
+        "input": {
+            "required": {
+                "conditioning_1": [
+                    "CONDITIONING"
+                ],
+                "conditioning_2": [
+                    "CONDITIONING"
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "conditioning_1",
+                "conditioning_2"
+            ]
+        },
+        "output": [
+            "CONDITIONING"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "CONDITIONING"
+        ],
+        "name": "ConditioningCombine",
+        "display_name": "Conditioning (Combine)",
+        "description": "",
+        "python_module": "nodes",
+        "category": "conditioning",
+        "output_node": false
+    }
+}

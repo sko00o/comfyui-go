@@ -1,0 +1,86 @@
+{
+    "LoraLoader": {
+        "input": {
+            "required": {
+                "model": [
+                    "MODEL",
+                    {
+                        "tooltip": "The diffusion model the LoRA will be applied to."
+                    }
+                ],
+                "clip": [
+                    "CLIP",
+                    {
+                        "tooltip": "The CLIP model the LoRA will be applied to."
+                    }
+                ],
+                "lora_name": [
+                    [
+                        "CLAYMATE_V2.03_.safetensors",
+                        "DD-made-of-clay-XL-v2.safetensors",
+                        "FLUX.1-Turbo-Alpha/diffusion_pytorch_model.safetensors",
+                        "FLUX1/DollCute.safetensors",
+                        "FLUX1/WoolFeltWorld_FLUX_v1.0.safetensors",
+                        "FilmVelvia3.safetensors",
+                        "StickersRedmond.safetensors",
+                        "add-detail-xl.safetensors"
+                    ],
+                    {
+                        "tooltip": "The name of the LoRA."
+                    }
+                ],
+                "strength_model": [
+                    "FLOAT",
+                    {
+                        "default": 1.0,
+                        "min": -100.0,
+                        "max": 100.0,
+                        "step": 0.01,
+                        "tooltip": "How strongly to modify the diffusion model. This value can be negative."
+                    }
+                ],
+                "strength_clip": [
+                    "FLOAT",
+                    {
+                        "default": 1.0,
+                        "min": -100.0,
+                        "max": 100.0,
+                        "step": 0.01,
+                        "tooltip": "How strongly to modify the CLIP model. This value can be negative."
+                    }
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "model",
+                "clip",
+                "lora_name",
+                "strength_model",
+                "strength_clip"
+            ]
+        },
+        "output": [
+            "MODEL",
+            "CLIP"
+        ],
+        "output_is_list": [
+            false,
+            false
+        ],
+        "output_name": [
+            "MODEL",
+            "CLIP"
+        ],
+        "name": "LoraLoader",
+        "display_name": "Load LoRA",
+        "description": "LoRAs are used to modify diffusion and CLIP models, altering the way in which latents are denoised such as applying styles. Multiple LoRA nodes can be linked together.",
+        "python_module": "nodes",
+        "category": "loaders",
+        "output_node": false,
+        "output_tooltips": [
+            "The modified diffusion model.",
+            "The modified CLIP model."
+        ]
+    }
+}

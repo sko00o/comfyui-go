@@ -1,0 +1,35 @@
+{
+    "ImageUpscaleWithModel": {
+        "input": {
+            "required": {
+                "upscale_model": [
+                    "UPSCALE_MODEL"
+                ],
+                "image": [
+                    "IMAGE"
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "upscale_model",
+                "image"
+            ]
+        },
+        "output": [
+            "IMAGE"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "IMAGE"
+        ],
+        "name": "ImageUpscaleWithModel",
+        "display_name": "Upscale Image (using Model)",
+        "description": "",
+        "python_module": "comfy_extras.nodes_upscale_model",
+        "category": "image/upscaling",
+        "output_node": false
+    }
+}

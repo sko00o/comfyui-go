@@ -1,0 +1,62 @@
+{
+    "EmptyLatentImage": {
+        "input": {
+            "required": {
+                "width": [
+                    "INT",
+                    {
+                        "default": 512,
+                        "min": 16,
+                        "max": 16384,
+                        "step": 8,
+                        "tooltip": "The width of the latent images in pixels."
+                    }
+                ],
+                "height": [
+                    "INT",
+                    {
+                        "default": 512,
+                        "min": 16,
+                        "max": 16384,
+                        "step": 8,
+                        "tooltip": "The height of the latent images in pixels."
+                    }
+                ],
+                "batch_size": [
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": 1,
+                        "max": 4096,
+                        "tooltip": "The number of latent images in the batch."
+                    }
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "width",
+                "height",
+                "batch_size"
+            ]
+        },
+        "output": [
+            "LATENT"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "LATENT"
+        ],
+        "name": "EmptyLatentImage",
+        "display_name": "Empty Latent Image",
+        "description": "Create a new batch of empty latent images to be denoised via sampling.",
+        "python_module": "nodes",
+        "category": "latent",
+        "output_node": false,
+        "output_tooltips": [
+            "The empty latent image batch."
+        ]
+    }
+}

@@ -1,0 +1,81 @@
+{
+    "SamplerCustom": {
+        "input": {
+            "required": {
+                "model": [
+                    "MODEL"
+                ],
+                "add_noise": [
+                    "BOOLEAN",
+                    {
+                        "default": true
+                    }
+                ],
+                "noise_seed": [
+                    "INT",
+                    {
+                        "default": 0,
+                        "min": 0,
+                        "max": 18446744073709551615
+                    }
+                ],
+                "cfg": [
+                    "FLOAT",
+                    {
+                        "default": 8.0,
+                        "min": 0.0,
+                        "max": 100.0,
+                        "step": 0.1,
+                        "round": 0.01
+                    }
+                ],
+                "positive": [
+                    "CONDITIONING"
+                ],
+                "negative": [
+                    "CONDITIONING"
+                ],
+                "sampler": [
+                    "SAMPLER"
+                ],
+                "sigmas": [
+                    "SIGMAS"
+                ],
+                "latent_image": [
+                    "LATENT"
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "model",
+                "add_noise",
+                "noise_seed",
+                "cfg",
+                "positive",
+                "negative",
+                "sampler",
+                "sigmas",
+                "latent_image"
+            ]
+        },
+        "output": [
+            "LATENT",
+            "LATENT"
+        ],
+        "output_is_list": [
+            false,
+            false
+        ],
+        "output_name": [
+            "output",
+            "denoised_output"
+        ],
+        "name": "SamplerCustom",
+        "display_name": "SamplerCustom",
+        "description": "",
+        "python_module": "comfy_extras.nodes_custom_sampler",
+        "category": "sampling/custom_sampling",
+        "output_node": false
+    }
+}

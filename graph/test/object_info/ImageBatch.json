@@ -1,0 +1,35 @@
+{
+    "ImageBatch": {
+        "input": {
+            "required": {
+                "image1": [
+                    "IMAGE"
+                ],
+                "image2": [
+                    "IMAGE"
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "image1",
+                "image2"
+            ]
+        },
+        "output": [
+            "IMAGE"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "IMAGE"
+        ],
+        "name": "ImageBatch",
+        "display_name": "Batch Images",
+        "description": "",
+        "python_module": "nodes",
+        "category": "image",
+        "output_node": false
+    }
+}

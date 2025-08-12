@@ -1,0 +1,68 @@
+{
+    "ImageScale": {
+        "input": {
+            "required": {
+                "image": [
+                    "IMAGE"
+                ],
+                "upscale_method": [
+                    [
+                        "nearest-exact",
+                        "bilinear",
+                        "area",
+                        "bicubic",
+                        "lanczos"
+                    ]
+                ],
+                "width": [
+                    "INT",
+                    {
+                        "default": 512,
+                        "min": 0,
+                        "max": 16384,
+                        "step": 1
+                    }
+                ],
+                "height": [
+                    "INT",
+                    {
+                        "default": 512,
+                        "min": 0,
+                        "max": 16384,
+                        "step": 1
+                    }
+                ],
+                "crop": [
+                    [
+                        "disabled",
+                        "center"
+                    ]
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "image",
+                "upscale_method",
+                "width",
+                "height",
+                "crop"
+            ]
+        },
+        "output": [
+            "IMAGE"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "IMAGE"
+        ],
+        "name": "ImageScale",
+        "display_name": "Upscale Image",
+        "description": "",
+        "python_module": "nodes",
+        "category": "image/upscaling",
+        "output_node": false
+    }
+}

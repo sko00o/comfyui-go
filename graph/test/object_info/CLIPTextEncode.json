@@ -1,0 +1,46 @@
+{
+    "CLIPTextEncode": {
+        "input": {
+            "required": {
+                "text": [
+                    "STRING",
+                    {
+                        "multiline": true,
+                        "dynamicPrompts": true,
+                        "tooltip": "The text to be encoded."
+                    }
+                ],
+                "clip": [
+                    "CLIP",
+                    {
+                        "tooltip": "The CLIP model used for encoding the text."
+                    }
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "text",
+                "clip"
+            ]
+        },
+        "output": [
+            "CONDITIONING"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "CONDITIONING"
+        ],
+        "name": "CLIPTextEncode",
+        "display_name": "CLIP Text Encode (Prompt)",
+        "description": "Encodes a text prompt using a CLIP model into an embedding that can be used to guide the diffusion model towards generating specific images.",
+        "python_module": "nodes",
+        "category": "conditioning",
+        "output_node": false,
+        "output_tooltips": [
+            "A conditioning containing the embedded text used to guide the diffusion model."
+        ]
+    }
+}

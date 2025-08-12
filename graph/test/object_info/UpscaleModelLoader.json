@@ -1,0 +1,43 @@
+{
+    "UpscaleModelLoader": {
+        "input": {
+            "required": {
+                "model_name": [
+                    [
+                        "4x-AnimeSharp.pth",
+                        "4x-UltraSharp.safetensors",
+                        "4x_NMKD-Siax_200k.pth",
+                        "4x_Nickelback_70000G.pth",
+                        "4x_foolhardy_Remacri.pth",
+                        "8x_NMKD-Faces_160000_G.pth",
+                        "8x_NMKD-Superscale_150000_G.pth",
+                        "RealESRGAN_x2plus.pth",
+                        "RealESRGAN_x4plus.pth",
+                        "RealESRGAN_x4plus_anime_6B.pth",
+                        "ldsr_last.ckpt"
+                    ]
+                ]
+            }
+        },
+        "input_order": {
+            "required": [
+                "model_name"
+            ]
+        },
+        "output": [
+            "UPSCALE_MODEL"
+        ],
+        "output_is_list": [
+            false
+        ],
+        "output_name": [
+            "UPSCALE_MODEL"
+        ],
+        "name": "UpscaleModelLoader",
+        "display_name": "Load Upscale Model",
+        "description": "",
+        "python_module": "comfy_extras.nodes_upscale_model",
+        "category": "loaders",
+        "output_node": false
+    }
+}
