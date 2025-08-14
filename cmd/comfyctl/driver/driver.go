@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"path/filepath"
 	"sync"
-	"sync/atomic"
 	"text/template"
 	"time"
 
@@ -16,9 +16,12 @@ import (
 	fs "github.com/marsgopher/fileop/simplefs"
 
 	comfyui "github.com/sko00o/comfyui-go"
-	"github.com/sko00o/comfyui-go/filemanager"
 	"github.com/sko00o/comfyui-go/iface"
 	"github.com/sko00o/comfyui-go/logger"
+	"github.com/sko00o/comfyui-go/session"
+	"github.com/sko00o/comfyui-go/supervisor"
+
+	"github.com/sko00o/comfyui-go/cmd/comfyctl/filemanager"
 )
 
 const (
@@ -92,9 +95,10 @@ func New(ctx context.Context, c Config, opts ...Option) (*Driver, error) {
 		return nil, fmt.Errorf("new comfyui cli: %w", err)
 	}
 	d.Client = cli
+	d.Supervisor = supervisor.NewSupervisor(cli, supervisor.WithLogger(d.Logger))
 
 	if !c.DisableHealthCheck {
-		if err := d.WaitingForSystemAlive(ctx); err != nil {
+		if err := d.Supervisor.WaitingForSystemAlive(ctx); err != nil {
 			return nil, fmt.Errorf("waiting for system alive: %w", err)
 		}
 	}
@@ -135,6 +139,8 @@ func New(ctx context.Context, c Config, opts ...Option) (*Driver, error) {
 
 type Driver struct {
 	*comfyui.Client
+	iface.Supervisor
+
 	Handler fileop.FileSystemSimpleBucket
 	Config
 	fManagerMap map[string]filemanager.IFileManager
@@ -171,6 +177,14 @@ type NodeOutputDetail struct {
 
 type NodeOutput map[string]*NodeOutputDetail
 
+type SaveAdapter struct {
+	fs fileop.FileSystemSimpleBucket
+}
+
+func (sa *SaveAdapter) Save(srcReader io.Reader, destPath string, contentType string) error {
+	return sa.fs.PutStreamWithContentType(srcReader, destPath, contentType)
+}
+
 type DriverSessionResult struct {
 	NodeOutput NodeOutput
 	QPResp     comfyui.QueuePromptResp
@@ -185,43 +199,31 @@ func (d *Driver) NewSession(
 	nameTmpl *template.Template,
 	totalNodes int,
 	progressChan chan<- iface.ProgressInfo,
-) *Session {
+) *session.Session {
 	handler := d.Handler
 	if bucket != "" {
 		handler = handler.Bucket(bucket)
 	}
-	sess := &Session{
-		Client:  d.Client,
-		Handler: handler,
-
-		IsTriggerNode: isTriggerNodeID,
-		runningNode:   nil,
-
-		idx:    &atomic.Uint32{},
-		resMap: sync.Map{},
-
-		ClientID:     clientID,
-		PromptID:     promptID,
-		TaskID:       taskID,
-		FilenameTmpl: nameTmpl,
-		NameMapCh:    nameMapCh, // each id has name chan
-		TextMapCh:    textMapCh, // each id has text chan
-		Logger: d.Logger.With(
+	sess := session.New(
+		taskID,
+		clientID,
+		promptID,
+		isTriggerNodeID,
+		nameMapCh,
+		textMapCh,
+		nameTmpl,
+		totalNodes,
+		progressChan,
+		d.RetryTimes,
+		d.Logger.With(
 			"task_id", taskID,
 			"client_id", clientID,
 			"prompt_id", promptID,
 		),
+		d.Client,
+		&SaveAdapter{fs: handler},
+	)
 
-		TotalNodes:    totalNodes,
-		ExecutedNodes: make([]string, 0, totalNodes),
-		ProgressChan:  progressChan,
-
-		RetryTimes: d.RetryTimes,
-
-		done: make(chan struct{}),
-
-		NodesTime: make(map[string]time.Duration),
-	}
 	return sess
 }
 
@@ -291,7 +293,7 @@ func (d *Driver) commonGenerate(
 		result.NodesTime = sess.NodesTime
 	}()
 
-	processWg, err := d.SimpleProcess(clientID, &WrapSession{Session: sess})
+	processWg, err := d.SimpleProcess(clientID, &session.WrapSession{Session: sess})
 	if err != nil {
 		return nil, fmt.Errorf("consume process: %w", err)
 	}
@@ -320,14 +322,9 @@ func (d *Driver) commonGenerate(
 		return
 	}
 	promptID = resp.PromptID
-	sess.StoreResp(promptID, RespResult{
+	sess.StoreResp(promptID, session.RespResult{
 		QPResp:    *resp,
 		ErrorChan: make(chan error, 1),
 	})
 	return
-}
-
-type RespResult struct {
-	QPResp    comfyui.QueuePromptResp
-	ErrorChan chan error
 }

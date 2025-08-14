@@ -1,4 +1,4 @@
-package driver
+package session
 
 import (
 	"fmt"
@@ -33,10 +33,6 @@ func (s *WrapSession) WriteMessage(messageType int, data []byte) error {
 func (s *WrapSession) ReadMessage() (messageType int, p []byte, err error) {
 	<-s.done
 	return 0, nil, io.EOF
-}
-
-func (s *WrapSession) Close() error {
-	return nil
 }
 
 func (s *WrapSession) Name() string {

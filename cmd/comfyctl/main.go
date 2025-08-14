@@ -16,11 +16,12 @@ import (
 	"github.com/marsgopher/mahou/log"
 	"github.com/spf13/cobra"
 
-	sd "github.com/sko00o/comfyui-go/driver"
 	comfyError "github.com/sko00o/comfyui-go/error"
 	"github.com/sko00o/comfyui-go/graph"
 	"github.com/sko00o/comfyui-go/iface"
 	"github.com/sko00o/comfyui-go/logger"
+
+	"github.com/sko00o/comfyui-go/cmd/comfyctl/driver"
 )
 
 func WrapHandleErr(err error) (errObj map[string]any, isOOM bool) {
@@ -40,11 +41,11 @@ func WrapHandleErr(err error) (errObj map[string]any, isOOM bool) {
 }
 
 type Config struct {
-	SD              sd.Config `mapstructure:"sd"`
-	WorkflowPattern []string  `mapstructure:"workflow_pattern"`
-	NoRecord        bool      `mapstructure:"no_record"`
-	RecordDir       string    `mapstructure:"record_dir"`
-	ClientID        string    `mapstructure:"client_id"`
+	SD              driver.Config `mapstructure:"sd"`
+	WorkflowPattern []string      `mapstructure:"workflow_pattern"`
+	NoRecord        bool          `mapstructure:"no_record"`
+	RecordDir       string        `mapstructure:"record_dir"`
+	ClientID        string        `mapstructure:"client_id"`
 
 	EnableSupervisor bool `mapstructure:"enable_supervisor"`
 }
@@ -72,15 +73,14 @@ func NewCommand(cmd *cobra.Command) {
 	})
 }
 
-func processWorkflowFile(ctx context.Context, file string, recordFile string, driver *sd.Driver, converter *graph.GraphConverter, clientID string) error {
+func processWorkflowFile(ctx context.Context, file string, recordFile string, dr *driver.Driver, converter *graph.GraphConverter, clientID string) error {
 	// Read workflow file
 	workflowData, err := os.ReadFile(file)
 	if err != nil {
 		return fmt.Errorf("reading file: %w", err)
 	}
 
-	var req sd.PromptRequest
-	req.Request = sd.Request{}
+	var req driver.Request
 	if strings.HasSuffix(file, "_api.json") {
 		req.Prompt = workflowData
 	} else if strings.HasSuffix(file, "_full.json") {
@@ -97,12 +97,12 @@ func processWorkflowFile(ctx context.Context, file string, recordFile string, dr
 		req.ExtraData = json.RawMessage(fmt.Sprintf(`{"extra_data":{"workflow":%s}}`, rawMessage))
 	}
 
-	if err := driver.KeepSystemHealthy(ctx); err != nil {
+	if err := dr.KeepSystemHealthy(ctx); err != nil {
 		return fmt.Errorf("keeping system healthy: %w", err)
 	}
 
 	log.Infof("start processing %s", file)
-	res, err := processRetryOnOOM(ctx, driver, uuid.New().String(), clientID, req)
+	res, err := processRetryOnOOM(ctx, dr, uuid.New().String(), clientID, req)
 	if err != nil {
 		return fmt.Errorf("processing workflow: %w", err)
 	}
@@ -138,7 +138,7 @@ func run(ctx context.Context, cfg Config) error {
 	if cfg.SD.BaseDir == "" {
 		cfg.SD.BaseDir = os.TempDir()
 	}
-	driver, err := sd.New(ctx, cfg.SD, sd.WithLogger(&Logger{Logger: log.Get()}))
+	dr, err := driver.New(ctx, cfg.SD, driver.WithLogger(&Logger{Logger: log.Get()}))
 	if err != nil {
 		log.Fatalf("creating driver: %v", err)
 	}
@@ -181,14 +181,14 @@ func run(ctx context.Context, cfg Config) error {
 		}
 
 		// exit when error happened
-		if err := processWorkflowFile(ctx, file, recordFile, driver, converter, cfg.ClientID); err != nil {
+		if err := processWorkflowFile(ctx, file, recordFile, dr, converter, cfg.ClientID); err != nil {
 			log.Fatalf("processing file %s: %v", file, err)
 		}
 	}
 	return nil
 }
 
-func process(driver *sd.Driver, taskID, clientID string, req sd.PromptRequest) (*sd.Response, error) {
+func process(dr *driver.Driver, taskID, clientID string, req driver.Request) (*driver.Response, error) {
 	progressChan := make(chan iface.ProgressInfo, 1)
 	defer close(progressChan)
 	go func() {
@@ -199,16 +199,16 @@ func process(driver *sd.Driver, taskID, clientID string, req sd.PromptRequest) (
 	if clientID == "" {
 		clientID = taskID
 	}
-	return driver.HandlePrompt(req.Request, taskID, clientID, "", progressChan)
+	return dr.HandlePrompt(req, taskID, clientID, "", progressChan)
 }
 
-func processRetryOnOOM(ctx context.Context, driver *sd.Driver, taskID, clientID string, req sd.PromptRequest) (*sd.Response, error) {
+func processRetryOnOOM(ctx context.Context, dr *driver.Driver, taskID, clientID string, req driver.Request) (*driver.Response, error) {
 	maxRetries := 2
-	var res *sd.Response
+	var res *driver.Response
 	var err error
 
 	for attempt := 0; attempt <= maxRetries; attempt++ {
-		res, err = process(driver, taskID, clientID, req)
+		res, err = process(dr, taskID, clientID, req)
 		if err != nil {
 			if _, isOOM := WrapHandleErr(err); isOOM && attempt < maxRetries {
 				if attempt == 0 {
@@ -217,7 +217,7 @@ func processRetryOnOOM(ctx context.Context, driver *sd.Driver, taskID, clientID 
 				} else {
 					// Second retry with reboot
 					log.Infof("task %s is OOM (attempt %d/%d), waiting for reboot", taskID, attempt+1, maxRetries+1)
-					if err := driver.WaitingForReboot(ctx); err != nil {
+					if err := dr.WaitingForReboot(ctx); err != nil {
 						return res, fmt.Errorf("keeping system healthy: %w", err)
 					}
 				}

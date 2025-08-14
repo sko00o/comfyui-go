@@ -7,12 +7,9 @@ import (
 	"io"
 	"net"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"sync"
 	"time"
-
-	"github.com/gin-gonic/gin"
 
 	comfyError "github.com/sko00o/comfyui-go/error"
 	"github.com/sko00o/comfyui-go/logger"
@@ -71,12 +68,6 @@ func New(c Config, opts ...Option) (*Client, error) {
 type api struct {
 	Once sync.Once
 	URL  string
-}
-
-// ServerHTTP server any request to ComfyUI
-func (c *Client) HandleAll(ctx *gin.Context) {
-	proxy := httputil.NewSingleHostReverseProxy(&c.BaseURL)
-	proxy.ServeHTTP(ctx.Writer, ctx.Request)
 }
 
 func (c *Client) reqURL(path ReqPath) string {

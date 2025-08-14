@@ -1,16 +1,71 @@
-package driver
+package supervisor
 
 import (
 	"context"
 	"fmt"
 	"time"
 
+	comfyui "github.com/sko00o/comfyui-go"
 	"github.com/sko00o/comfyui-go/iface"
+	"github.com/sko00o/comfyui-go/logger"
 )
 
-var _ iface.Supervisor = (*Driver)(nil)
+var _ iface.Supervisor = (*Supervisor)(nil)
 
-func (d *Driver) KeepSystemHealthy(ctx context.Context) error {
+type Supervisor struct {
+	*comfyui.Client
+	Logger logger.LoggerExtend
+
+	// RAMFreeThreshold is the threshold of free RAM usage
+	RAMFreeThreshold float64
+	// VRAMFreeThreshold is the threshold of free VRAM usage
+	VRAMFreeThreshold float64
+	// TorchVRAMFreeThreshold is the threshold of free torch VRAM usage
+	TorchVRAMFreeThreshold float64
+}
+
+type Option func(d *Supervisor)
+
+func WithLogger(l logger.LoggerExtend) Option {
+	return func(d *Supervisor) {
+		d.Logger = l
+	}
+}
+
+func WithRAMFreeThreshold(threshold float64) Option {
+	return func(d *Supervisor) {
+		d.RAMFreeThreshold = threshold
+	}
+}
+
+func WithVRAMFreeThreshold(threshold float64) Option {
+	return func(d *Supervisor) {
+		d.VRAMFreeThreshold = threshold
+	}
+}
+
+func WithTorchVRAMFreeThreshold(threshold float64) Option {
+	return func(d *Supervisor) {
+		d.TorchVRAMFreeThreshold = threshold
+	}
+}
+
+func NewSupervisor(client *comfyui.Client, opts ...Option) *Supervisor {
+	s := &Supervisor{
+		Client: client,
+		Logger: logger.NewStd(),
+
+		RAMFreeThreshold:       0.1,
+		VRAMFreeThreshold:      0.2,
+		TorchVRAMFreeThreshold: 0.1,
+	}
+	for _, opt := range opts {
+		opt(s)
+	}
+	return s
+}
+
+func (d *Supervisor) KeepSystemHealthy(ctx context.Context) error {
 	if d.IsQueueEmpty() && d.IsSystemHealthy() {
 		return nil
 	}
@@ -18,13 +73,13 @@ func (d *Driver) KeepSystemHealthy(ctx context.Context) error {
 	return d.WaitingForReboot(ctx)
 }
 
-func (d *Driver) WaitingForReboot(ctx context.Context) error {
+func (d *Supervisor) WaitingForReboot(ctx context.Context) error {
 	d.Logger.Infof("system start reboot...")
 	_ = d.Reboot() // ignore any response
 	return d.WaitingForSystemAlive(ctx)
 }
 
-func (d *Driver) WaitingForSystemAlive(ctx context.Context) error {
+func (d *Supervisor) WaitingForSystemAlive(ctx context.Context) error {
 	for i := 0; ; i++ {
 		if d.IsSystemAlive() {
 			d.Logger.Infof("system is alive")
@@ -40,12 +95,12 @@ func (d *Driver) WaitingForSystemAlive(ctx context.Context) error {
 	}
 }
 
-func (d *Driver) IsSystemAlive() bool {
+func (d *Supervisor) IsSystemAlive() bool {
 	_, err := d.Stats()
 	return err == nil
 }
 
-func (d *Driver) IsSystemHealthy() bool {
+func (d *Supervisor) IsSystemHealthy() bool {
 	resp, err := d.Stats()
 	if err != nil {
 		d.Logger.Warnf("system stats: %v", err)
@@ -77,7 +132,7 @@ func (d *Driver) IsSystemHealthy() bool {
 	return true
 }
 
-func (d *Driver) IsQueueEmpty() bool {
+func (d *Supervisor) IsQueueEmpty() bool {
 	resp, err := d.GetPrompt()
 	if err != nil {
 		d.Logger.Warnf("queue empty check: %v", err)

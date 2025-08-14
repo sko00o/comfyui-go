@@ -1,4 +1,4 @@
-package driver
+package session
 
 import (
 	"bytes"
@@ -14,8 +14,6 @@ import (
 	"time"
 
 	"sync/atomic"
-
-	"github.com/marsgopher/fileop"
 
 	"github.com/sko00o/comfyui-go"
 	comfyError "github.com/sko00o/comfyui-go/error"
@@ -46,9 +44,13 @@ type SaveSession struct {
 	NodeID string
 }
 
+type SaveHandler interface {
+	Save(srcReader io.Reader, destPath string, contentType string) error
+}
+
 type Session struct {
 	*comfyui.Client
-	Handler fileop.FileSystemSimpleBucket
+	Handler SaveHandler
 
 	// nodeID -> outputDir
 	IsTriggerNode map[string]string
@@ -59,7 +61,7 @@ type Session struct {
 	// nodeID -> texts
 	TextMapCh map[string]chan string
 
-	idx    *atomic.Uint32
+	idx    atomic.Uint32
 	resMap sync.Map
 
 	FilenameTmpl *template.Template
@@ -80,6 +82,58 @@ type Session struct {
 	lastNodeID        string
 	lastNodeStartTime time.Time
 	NodesTime         map[string]time.Duration
+}
+
+func New(taskID, clientID, promptID string,
+	isTriggerNodeID map[string]string,
+	nameMapCh map[string]chan string,
+	textMapCh map[string]chan string,
+	nameTmpl *template.Template,
+	totalNodes int,
+	progressChan chan<- iface.ProgressInfo,
+
+	retryTimes int,
+
+	logger logger.Logger,
+	client *comfyui.Client,
+	handler SaveHandler,
+) *Session {
+	return &Session{
+		Client:  client,
+		Handler: handler,
+
+		IsTriggerNode: isTriggerNodeID,
+
+		ClientID:     clientID,
+		PromptID:     promptID,
+		TaskID:       taskID,
+		FilenameTmpl: nameTmpl,
+		NameMapCh:    nameMapCh, // each id has name chan
+		TextMapCh:    textMapCh, // each id has text chan
+		Logger:       logger,
+
+		TotalNodes:    totalNodes,
+		ExecutedNodes: make([]string, 0, totalNodes),
+		ProgressChan:  progressChan,
+
+		RetryTimes: retryTimes,
+
+		done: make(chan struct{}),
+
+		NodesTime: make(map[string]time.Duration),
+	}
+}
+
+type RespResult struct {
+	QPResp    comfyui.QueuePromptResp
+	ErrorChan chan error
+}
+
+func (s *Session) Close() error {
+	if s.done != nil {
+		close(s.done)
+	}
+	return nil
 }
 
 func (s *Session) StoreResp(promptID string, resp RespResult) {
@@ -106,7 +160,7 @@ type SessionResult struct {
 }
 
 func (s *Session) Wait(maxTimeout time.Duration) map[string]SessionResult {
-	defer close(s.done)
+	defer s.Close()
 	resMap := make(map[string]SessionResult)
 
 	timeout := time.NewTimer(maxTimeout)
@@ -434,7 +488,7 @@ func (s *Session) saveReader(id, name string, rd io.Reader, contentType string) 
 	}()
 	dirname := s.IsTriggerNode[id]
 	target := filepath.Join(dirname, name)
-	err = s.Handler.PutStreamWithContentType(rd, target, contentType)
+	err = s.Handler.Save(rd, target, contentType)
 	return err
 }
 
